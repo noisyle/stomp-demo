@@ -1,18 +1,25 @@
 package hello;
 
+
 public class Greeting {
 
     private String content;
+    private long time;
 
     public Greeting() {
     }
 
-    public Greeting(String content) {
+    public Greeting(String content, long time) {
         this.content = content;
+        this.time = time;
     }
-
+    
     public String getContent() {
-        return content;
+    	return content;
+    }
+    
+    public long getTime() {
+    	return time;
     }
 
 }

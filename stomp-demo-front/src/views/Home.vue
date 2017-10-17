@@ -11,7 +11,11 @@
       <button @click="send">Send</button>
     </div>
     <h2>Message Received</h2>
-    <p>{{ received_messages }}</p>
+    <ul>
+      <li v-for="msg in received_messages" v-bind:key="msg.time">
+        [{{ msg.time | formatDate }}] {{ msg.content }}
+      </li>
+    </ul>
   </div>
 </template>
 
@@ -31,6 +35,7 @@ export default {
     send () {
       if (this.stompClient && this.stompClient.connected) {
         this.stompClient.send('/app/hello', JSON.stringify({'name': this.send_message}), {})
+        this.send_message = null
       }
     },
     connect () {
@@ -38,8 +43,8 @@ export default {
       this.stompClient = Stomp.over(this.socket)
       this.stompClient.connect({}, (frame) => {
         this.connected = true
-        this.stompClient.subscribe('/topic/greetings', (result) => {
-          this.received_messages.push(JSON.parse(result.body).content)
+        this.stompClient.subscribe('/topic/greetings', (greeting) => {
+          this.received_messages.push(JSON.parse(greeting.body))
         })
       }, (error) => {
         console.log(error)
@@ -54,6 +59,18 @@ export default {
     },
     tickleConnection () {
       this.connected ? this.disconnect() : this.connect()
+    }
+  },
+  filters: {
+    formatDate (time) {
+      var d = new Date(time)
+      var year = d.getFullYear()
+      var month = d.getMonth() + 1
+      var day = d.getDate() < 10 ? '0' + d.getDate() : '' + d.getDate()
+      var hour = d.getHours()
+      var minutes = d.getMinutes()
+      var seconds = d.getSeconds()
+      return year + '-' + month + '-' + day + ' ' + hour + ':' + minutes + ':' + seconds
     }
   },
   mounted () {
