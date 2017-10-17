@@ -22,6 +22,7 @@
 <script>
 import SockJS from 'sockjs-client'
 import Stomp from 'webstomp-client'
+
 export default {
   name: 'home',
   data () {
@@ -88,6 +89,12 @@ export default {
   },
   mounted () {
     this.connect()
+  },
+  beforeDestroy () {
+    this.disconnect()
   }
 }
 </script>
+
+<style scoped>
+</style>
