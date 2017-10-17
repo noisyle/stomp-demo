@@ -12,8 +12,8 @@
     </div>
     <h2>Message Received</h2>
     <ul>
-      <li v-for="msg in received_messages" v-bind:key="msg.time">
-        [{{ msg.time | formatDate }}] {{ msg.content }}
+      <li v-for="msg in received_messages" :key="msg.time">
+        [{{ msg.time | formatDate('yyyy-MM-dd hh:mm:ss') }}] {{ msg.content }}
       </li>
     </ul>
   </div>
@@ -62,15 +62,28 @@ export default {
     }
   },
   filters: {
-    formatDate (time) {
+    formatDate (time, format) {
       var d = new Date(time)
-      var year = d.getFullYear()
-      var month = d.getMonth() + 1
-      var day = d.getDate() < 10 ? '0' + d.getDate() : '' + d.getDate()
-      var hour = d.getHours()
-      var minutes = d.getMinutes()
-      var seconds = d.getSeconds()
-      return year + '-' + month + '-' + day + ' ' + hour + ':' + minutes + ':' + seconds
+      var o = {
+        'M+': d.getMonth() + 1, // month
+        'd+': d.getDate(), // day
+        'h+': d.getHours(), // hour
+        'm+': d.getMinutes(), // minute
+        's+': d.getSeconds(), // second
+        'q+': Math.floor((d.getMonth() + 3) / 3), // quarter
+        'S': d.getMilliseconds() // millisecond
+      }
+
+      if (/(y+)/.test(format)) {
+        format = format.replace(RegExp.$1, (d.getFullYear() + '').substr(4 - RegExp.$1.length))
+      }
+
+      for (var k in o) {
+        if (new RegExp('(' + k + ')').test(format)) {
+          format = format.replace(RegExp.$1, RegExp.$1.length === 1 ? o[k] : ('00' + o[k]).substr(('' + o[k]).length))
+        }
+      }
+      return format
     }
   },
   mounted () {
