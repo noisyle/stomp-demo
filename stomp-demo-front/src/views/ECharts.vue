@@ -13,77 +13,107 @@ export default {
   data () {
     return {
       thread: null,
-      now: +new Date(),
-      data: [],
+      data: [[11, 11, 15, 13, 12, 13, 10], [1, -2, 2, 5, 3, 2, 0], ['周一', '周二', '周三', '周四', '周五', '周六', '周日']],
       option: {
         title: {
-          text: '动态数据 + 时间坐标轴'
+          text: '一周气温变化',
+          subtext: '纯属虚构'
         },
         tooltip: {
-          trigger: 'axis',
-          formatter: function (params) {
-            params = params[0]
-            var date = new Date(params.name)
-            return date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear() + ' : ' + params.value[1]
+          trigger: 'axis'
+        },
+        legend: {
+          data: ['最高气温', '最低气温']
+        },
+        toolbox: {
+          show: true,
+          feature: {
+            mark: {show: true},
+            dataView: {show: true, readOnly: false},
+            magicType: {show: true, type: ['line', 'bar']},
+            restore: {show: true},
+            saveAsImage: {show: true}
+          }
+        },
+        calculable: true,
+        xAxis: [
+          {
+            type: 'category',
+            boundaryGap: false,
+            data: []
+          }
+        ],
+        yAxis: [
+          {
+            type: 'value',
+            axisLabel: {
+              formatter: '{value} °C'
+            }
+          }
+        ],
+        series: [
+          {
+            name: '最高气温',
+            type: 'line',
+            data: []
           },
-          axisPointer: {
-            animation: false
+          {
+            name: '最低气温',
+            type: 'line',
+            data: []
           }
-        },
-        xAxis: {
-          type: 'time',
-          splitLine: {
-            show: false
-          }
-        },
-        yAxis: {
-          type: 'value',
-          boundaryGap: [0, '100%'],
-          splitLine: {
-            show: false
-          }
-        },
-        series: [{
-          name: '模拟数据',
-          type: 'line',
-          showSymbol: false,
-          hoverAnimation: false,
-          data: []
-        }]
+        ]
       }
     }
   },
   methods: {
     randomData () {
-      this.now = new Date(+this.now + (24 * 3600 * 1000))
-      let value = Math.random() * 1000 + 500
-      return {
-        name: this.now.toString(),
-        value: [
-          [this.now.getFullYear(), this.now.getMonth() + 1, this.now.getDate()].join('/'), Math.round(value)
-        ]
-      }
+      this.data[0].shift()
+      this.data[1].shift()
+      this.data[0].push(Math.random() * 10 + 10)
+      this.data[1].push(Math.random() * 10)
+      this.data[2].push(this.data[2].shift())
     }
   },
   mounted () {
     // 基于准备好的dom，初始化echarts实例
     let mychart = ECharts.init(document.querySelector('#mychart'))
-    for (var i = 0; i < 100; i++) {
-      this.data.push(this.randomData())
-    }
 
     // 绘制图表
     mychart.setOption(this.option)
+    mychart.setOption({
+      xAxis: [
+        {
+          data: this.data[2]
+        }
+      ],
+      series: [
+        {
+          data: this.data[0]
+        }, {
+          data: this.data[1]
+        }
+      ]
+    })
 
     let that = this
     this.thread = setInterval(function () {
       if (that.data.length > 100) that.data.shift()
-      that.data.push(that.randomData())
+      that.randomData()
 
       mychart.setOption({
-        series: [{
-          data: that.data
-        }]
+        xAxis: [
+          {
+            data: that.data[2]
+          }
+        ],
+        series: [
+          {
+            data: that.data[0]
+          }, {
+            data: that.data[1]
+          }
+        ]
       })
     }, 1000)
   },
