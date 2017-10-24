@@ -40,7 +40,7 @@ export default {
       }
     },
     connect () {
-      this.socket = new SockJS('http://localhost:8081/websocket-endpoint')
+      this.socket = new SockJS('/api/websocket-endpoint')
       this.stompClient = Stomp.over(this.socket)
       this.stompClient.connect({}, (frame) => {
         this.connected = true
