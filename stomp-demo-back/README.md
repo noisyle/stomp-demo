@@ -1,15 +1,9 @@
-# stomp-demo-back
+检出代码
+git clone git@github.com:noisyle/stomp-demo.git
 
-> Backend project of STOMP demo. 
+更新代码
+git pull
 
-## Build Setup
-
-``` bash
-# run with Spring-Boot
-mvn spring-boot:run
-
-# run as JAR
-mvn package
-java -jar target/stomp-demo-back-0.0.1-SNAPSHOT.jar
-```
-
+编译docker镜像
+cd stomp-demo-back
+mvn install dockerfile:build

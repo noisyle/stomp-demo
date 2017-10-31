@@ -20,7 +20,7 @@
 
 	<properties>
 		<java.version>1.8</java.version>
-		<docker.image.prefix>chinanx</docker.image.prefix>
+		<docker.image.prefix>noisyle</docker.image.prefix>
 	</properties>
 
 	<repositories>
