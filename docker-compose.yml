@@ -10,6 +10,6 @@ services:
         ports:
             - 8081:8081
     stomp-demo-front:
-        image: noisyle/stomp-demo-back
+        image: noisyle/stomp-demo-front
         ports:
             - 80:80
