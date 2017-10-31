@@ -1,0 +1,15 @@
+version: '3'
+services:
+    stomp-demo-back:
+        image: noisyle/stomp-demo-back
+        environment:
+            MYSQL_DATABASE: sample
+            MYSQL_USER: mysql
+            MYSQL_PASSWORD: mysql
+            MYSQL_ROOT_PASSWORD: supersecret
+        ports:
+            - 8081:8081
+    stomp-demo-front:
+        image: noisyle/stomp-demo-back
+        ports:
+            - 80:80
