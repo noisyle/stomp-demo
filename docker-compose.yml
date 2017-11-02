@@ -9,7 +9,14 @@ services:
             MYSQL_ROOT_PASSWORD: supersecret
         ports:
             - 8081:8081
+        networks:
+              - stomp-demo-net
     stomp-demo-front:
         image: noisyle/stomp-demo-front
         ports:
             - 80:80
+        networks:
+              - stomp-demo-net
+networks:
+    stomp-demo-net:
+        driver: overlay
